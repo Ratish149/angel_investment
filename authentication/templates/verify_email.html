@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your New Email</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+        <img src="https://your-logo-url.com/logo.png" alt="Your Logo" style="width: 150px; margin-bottom: 20px;">
+        <h2>Dear {{ user.first_name }},</h2>
+        <p>Please verify your new email by clicking the button below:</p>
+        <a href="{{ verification_link }}" 
+           style="background-color: orange; color: white; padding: 15px 25px; text-decoration: none; 
+                  border-radius: 5px; display: inline-block; font-size: 16px; margin-top: 10px;">
+            Verify my new email
+        </a>
+        <p style="margin-top: 20px;">Thank you for using our service.</p>
+        <p>Your Team</p>
+    </div>
+</body>
+</html>
