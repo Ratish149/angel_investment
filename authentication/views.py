@@ -38,7 +38,7 @@ class UserRegistrationView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        user.is_active = False  # Keep inactive until verified
+        user.is_activated = False  # Keep inactive until verified
         user.save()
 
         # Send activation email
@@ -84,7 +84,7 @@ class LoginView(APIView):
         
         email = request.data.get('email')
         password = request.data.get('password')
-        user=authenticate(username=email,password=password)
+        user = authenticate(username=email, password=password)
          
         if user is not None:
             refresh = RefreshToken.for_user(user)
