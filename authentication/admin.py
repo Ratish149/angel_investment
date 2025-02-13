@@ -4,9 +4,9 @@ from unfold.admin import ModelAdmin
 # Register your models here.
 
 class CustomUserAdmin(ModelAdmin):
-    list_display = ('email', 'role', 'is_activated')
+    list_display = ('full_name','email', 'role', 'is_activated','is_staff')
     list_filter = ('role', 'is_activated')
-    search_fields = ('email','first_name')
+    search_fields = ('full_name','email','first_name')
 
 class CompanyAdmin(ModelAdmin):
     list_display = ('company_name', 'stage', 'contact_city', 'contact_country', 'contact_phone_number', 'contact_email', 'website', 'amount_raising', 'affiliation')
