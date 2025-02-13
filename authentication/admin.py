@@ -9,7 +9,7 @@ class CustomUserAdmin(ModelAdmin):
     search_fields = ('full_name','email','first_name')
 
 class CompanyAdmin(ModelAdmin):
-    list_display = ('company_name', 'stage', 'contact_city', 'contact_country', 'contact_phone_number', 'contact_email', 'website', 'amount_raising')
+    list_display = ('company_name', 'stage', 'contact_city', 'contact_country', 'contact_phone_number', 'contact_email', 'website', 'amount_raising', 'affiliation')
     list_filter = ('stage', 'contact_city', 'contact_country', 'amount_raising', 'affiliation')
     search_fields = ('company_name', 'contact_city', 'contact_country', 'contact_email', 'website', 'amount_raising', 'affiliation')
 
