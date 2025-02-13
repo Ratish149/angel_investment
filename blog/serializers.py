@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from .models import Author, Category, Tag, Post
-from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
-from bs4 import BeautifulSoup
 
 class HTMLField(serializers.CharField):
     def to_representation(self, value):
-        return str(BeautifulSoup(value, 'html.parser'))
+        return str(value)
 
     def to_internal_value(self, data):
         return data
