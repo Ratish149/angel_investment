@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import CustomUser, Company, CompanyTag, CompanyTeam
-from django.contrib.auth.password_validation import validate_password
 
 class CustomUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
