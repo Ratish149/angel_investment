@@ -1,6 +1,8 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from .views import UserRegistrationView, LoginView,CustomUserListCreateView, CustomUserRetrieveUpdateDestroyView, CompanyListCreateView, CompanyRetrieveUpdateDestroyView, CompanyTagListCreateView, CompanyTagRetrieveUpdateDestroyView, CompanyTeamListCreateView, CompanyTeamRetrieveUpdateDestroyView,activate_account, ChangeEmailView,verify_email
+from graphene_django.views import GraphQLView
+from .schema import schema
 
 
 urlpatterns = [
@@ -23,6 +25,9 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),  # Enable GraphiQL interface
+
+    
 
 
 ]

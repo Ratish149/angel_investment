@@ -7,7 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'first_name', 'last_name', 'email', 'role', 'password', 'confirm_password']
+        fields = ['id', 'full_name','email', 'role', 'password', 'confirm_password']
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
@@ -20,8 +20,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             username=validated_data['email'],
             email=validated_data['email'],
             password=validated_data['password'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+            full_name=validated_data['full_name'],
             role=validated_data['role']
         )
         return user

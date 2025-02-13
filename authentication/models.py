@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         ('Mentor', 'Mentor'),
         ('Startup', 'Startup')
     )
-
+    full_name = models.CharField(max_length=100)
     photo=models.FileField(upload_to='profile_pictures/', null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     is_activated = models.BooleanField(default=False)
