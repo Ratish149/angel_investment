@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'graphene_django',
+    'corsheaders',
 ]
 GRAPHENE = {
     'SCHEMA': 'authentication.schema.schema'  # Update with your app name
