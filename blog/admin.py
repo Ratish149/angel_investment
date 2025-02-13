@@ -9,9 +9,10 @@ admin.site.register(Category, ModelAdmin)
 admin.site.register(Tag, ModelAdmin)
 
 
-class PostAdmin(ModelAdmin):
-   formfield_overrides = {
-        models.TextField: {'widget': TinyMCE()},
-    }
+# class PostAdmin(ModelAdmin):
+#    formfield_overrides = {
+#         models.TextField: {'widget': TinyMCE()},
+#     }
    
-admin.site.register(Post,PostAdmin)
+# admin.site.register(Post,PostAdmin)
+admin.site.register(Post,ModelAdmin)

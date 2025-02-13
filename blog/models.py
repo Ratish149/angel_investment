@@ -55,7 +55,7 @@ class Post(SlugMixin,models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     thumbnail_image = models.FileField(null=True, blank=True)
     thumbnail_image_alt_description = models.CharField(max_length=300,null=True,blank=True)
-    blog_content = models.TextField(blank=True)
+    content = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag,blank=True)
     author = models.ForeignKey(Author, on_delete=models.DO_NOTHING)
     meta_title = models.CharField(max_length=200)
