@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authentication',
     'blog',
     'tinymce',
+    'team'
 ]
 GRAPHENE = {
     'SCHEMA': 'authentication.schema.schema'  # Update with your app name
