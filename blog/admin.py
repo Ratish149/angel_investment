@@ -9,8 +9,10 @@ admin.site.register(Category, ModelAdmin)
 admin.site.register(Tag, ModelAdmin)
 
 
-class TinyMce(ModelAdmin):
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMCE,},
-    }
-admin.site.register(Post,TinyMce)
+class PostAdmin(ModelAdmin):
+   def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'blog_content':
+            kwargs['widget'] = TinyMCE()
+        return super().formfield_for_dbfield(db_field, **kwargs)
+   
+admin.site.register(Post,PostAdmin)

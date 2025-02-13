@@ -7,10 +7,11 @@ from .serializers import (
     PostSerializer, PostSmallSerializer, TagSerializer, CategorySerializer,
     TagSmallSerializer, CategorySmallSerializer, PostSlugSerializer, AuthorSerializer
 )
+from bs4 import BeautifulSoup
 
 class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
-
+    
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return PostSmallSerializer
@@ -40,11 +41,18 @@ class PostDetailView(generics.RetrieveUpdateAPIView):
     def retrieve(self, request, *args, **kwargs):
         post = self.get_object()
         html_string = post.blog_content
+        soup = BeautifulSoup(html_string, 'html.parser')
+        toc_div = soup.find('div', class_='mce-toc')
+        if toc_div is not None:
+            toc_div.extract()
+        updated_html_string = str(toc_div)
+        
         similar_posts = Post.objects.filter(tags__in=post.tags.all()).exclude(slug=post.slug).distinct()[:5]
         similar_serializer = PostSmallSerializer(similar_posts, many=True)
         
         return Response({
             "data": self.get_serializer(post).data,
+            "toc": updated_html_string,
             "similar_listings": similar_serializer.data,
         })
 
