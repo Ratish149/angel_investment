@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'angel_investment.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'angel_investment',
+        'NAME': 'investly',
         'USER': 'ratish',
         'PASSWORD': 'ratish123',
         'HOST': 'localhost',
