@@ -1,3 +1,5 @@
+from graphene_django_pagination import DjangoPaginationConnectionField
+
 import graphene
 from graphene_django.types import DjangoObjectType
 from .models import Author, Category, Tag, Post
@@ -17,12 +19,13 @@ class TagType(DjangoObjectType):
 class PostType(DjangoObjectType):
     class Meta:
         model = Post
+        filter_fields = ['category', 'tags','slug']
 
 class Query(graphene.ObjectType):
     all_authors = graphene.List(AuthorType)
     all_categories = graphene.List(CategoryType)
     all_tags = graphene.List(TagType)
-    all_posts = graphene.List(PostType)
+    all_posts = DjangoPaginationConnectionField(PostType)
 
     def resolve_all_authors(self, info, **kwargs):
         return Author.objects.all()

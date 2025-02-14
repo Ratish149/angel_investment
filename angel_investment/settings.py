@@ -47,8 +47,13 @@ INSTALLED_APPS = [
     'tinymce',
     'team'
 ]
+
 GRAPHENE = {
-    'SCHEMA': 'authentication.schema.schema'  # Update with your app name
+    'SCHEMA': 'authentication.schema.schema',  # Existing schema
+    'SCHEMAS': [
+        'authentication.schema.schema',  # Existing schema
+        'blog.schema.schema'  # New schema from blog app
+    ]
 }
 
 MIDDLEWARE = [
