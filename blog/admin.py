@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Author,Category,Post,Tag
+from .models import Author,Category,Post,Tag,Faq
 from unfold.admin import ModelAdmin
 from tinymce.widgets import TinyMCE
 from django.db import models
@@ -17,3 +17,4 @@ class TinyMce(ModelAdmin):
         models.TextField: {'widget': TinyMCE,},
     }
 admin.site.register(Post,TinyMce)
+admin.site.register(Faq,ModelAdmin)
