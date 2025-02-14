@@ -1,6 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from .models import Author, Category, Tag, Post
+from .models import Author, Category, Tag, Post, Faq
 from graphene_django_pagination import DjangoPaginationConnectionField
 
 class AuthorType(DjangoObjectType):
@@ -20,11 +20,18 @@ class PostType(DjangoObjectType):
         model = Post
         filter_fields = ['category', 'tags','slug']
 
+class FaqType(DjangoObjectType):
+    class Meta:
+        model = Faq
+        filter_fields = ['question']
+
+
 class Query(graphene.ObjectType):
     all_authors = graphene.List(AuthorType)
     all_categories = graphene.List(CategoryType)
     all_tags = graphene.List(TagType)
     all_posts = DjangoPaginationConnectionField(PostType)
+    all_faqs = graphene.List(FaqType)
 
     def resolve_all_authors(self, info, **kwargs):
         return Author.objects.all()
@@ -37,5 +44,8 @@ class Query(graphene.ObjectType):
 
     def resolve_all_posts(self, info, **kwargs):
         return Post.objects.all()
+    
+    def resolve_all_faqs(self, info, **kwargs):
+        return Faq.objects.all()
 
 schema = graphene.Schema(query=Query)
