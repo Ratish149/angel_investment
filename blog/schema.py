@@ -1,8 +1,7 @@
-from graphene_django_pagination import DjangoPaginationConnectionField
-
 import graphene
 from graphene_django.types import DjangoObjectType
 from .models import Author, Category, Tag, Post
+from graphene_django_pagination import DjangoPaginationConnectionField
 
 class AuthorType(DjangoObjectType):
     class Meta:

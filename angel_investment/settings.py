@@ -45,14 +45,16 @@ INSTALLED_APPS = [
     'authentication',
     'blog',
     'tinymce',
-    'team'
+    'team',
+    'events',
 ]
 
 GRAPHENE = {
     'SCHEMA': 'authentication.schema.schema',  # Existing schema
     'SCHEMAS': [
         'authentication.schema.schema',  # Existing schema
-        'blog.schema.schema'  # New schema from blog app
+        'blog.schema.schema',  # New schema from blog app
+        'events.schema.schema',
     ]
 }
 

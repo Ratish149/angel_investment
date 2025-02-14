@@ -15,9 +15,7 @@ class CompanyAdmin(ModelAdmin):
     list_display = ('company_name', 'stage', 'contact_city', 'contact_country', 'contact_phone_number', 'contact_email', 'website', 'amount_raising', 'affiliation')
     list_filter = ('stage', 'contact_city', 'contact_country', 'amount_raising', 'affiliation')
     search_fields = ('company_name', 'contact_city', 'contact_country', 'contact_email', 'website', 'amount_raising', 'affiliation')
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMCE,},
-    }
+
 
 class CompanyTagAdmin(ModelAdmin):
     list_display = ('name',)
