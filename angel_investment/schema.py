@@ -4,15 +4,22 @@ from team.models import OurTeam
 from events.models import Event
 from blog.models import Author, Category, Tag, Post, Faq
 from academy.models import Academy, Chapter
+from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam
 from graphene_django_pagination import DjangoPaginationConnectionField
 
 
 # Define a GraphQL type for the OurTeam model
 class OurTeamType(DjangoObjectType):
+    profilePicture=graphene.String()
+
     class Meta:
         model = OurTeam
         filter_fields = ['id']
 
+    def resolve_profilePicture(self, info):
+        if self.profile_picture:
+            return self.profile_picture.url
+        return None
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
@@ -56,6 +63,29 @@ class ChapterType(DjangoObjectType):
     class Meta:
         model = Chapter
 
+class CustomUserType(DjangoObjectType):
+    class Meta:
+        model = CustomUser
+
+class CompanyType(DjangoObjectType):
+    logo=graphene.String()
+    class Meta:
+        model = Company
+        filter_fields = ['id']
+    
+    def resolve_logo(self, info):
+        if self.logo:
+            return self.logo.url
+        return None    
+
+class CompanyTagType(DjangoObjectType):
+    class Meta:
+        model = CompanyTag
+
+class CompanyTeamType(DjangoObjectType):
+    class Meta:
+        model = CompanyTeam
+
 # Define a query to list all team members
 class Query(graphene.ObjectType):
     all_team_members = DjangoPaginationConnectionField(OurTeamType)
@@ -70,6 +100,24 @@ class Query(graphene.ObjectType):
 
     academies = DjangoPaginationConnectionField(AcademyType)
     chapters = graphene.List(ChapterType)
+        
+    custom_users = graphene.List(CustomUserType)
+    companies = DjangoPaginationConnectionField(CompanyType)
+    company_tags = graphene.List(CompanyTagType)
+    company_teams = graphene.List(CompanyTeamType)
+
+
+    def resolve_custom_users(self, info, **kwargs):
+        return CustomUser.objects.all()
+
+    def resolve_companies(self, info, **kwargs):
+        return Company.objects.all()
+
+    def resolve_company_tags(self, info, **kwargs):
+        return CompanyTag.objects.all()
+
+    def resolve_company_teams(self, info, **kwargs):
+        return CompanyTeam.objects.all()
 
     def resolve_academies(self, info, **kwargs):
         return Academy.objects.all()
