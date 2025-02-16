@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://139.59.26.218/', 'http://localhost:8000/']
 # Application definition
 
 INSTALLED_APPS = [
@@ -59,9 +58,9 @@ GRAPHENE = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -223,3 +222,7 @@ EMAIL_HOST_USER = 'bdevil149@gmail.com'
 EMAIL_HOST_PASSWORD = 'agkr agoi ulip lwcp'
 
 DEFAULT_FROM_EMAIL = 'Angel Investment <AngelInvestment@gmail.com>'
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000','https://investly.baliyoventures.com','https://www.investly.baliyoventures.com'
+]
