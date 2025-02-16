@@ -16,9 +16,16 @@ class TagType(DjangoObjectType):
         model = Tag
 
 class PostType(DjangoObjectType):
+    thumbnailImage = graphene.String()
+
     class Meta:
         model = Post
-        filter_fields = ['category', 'tags','slug']
+        filter_fields = ['category', 'tags', 'slug']
+
+    def resolve_thumbnailImage(self, info):
+        if self.thumbnail_image:
+            return self.thumbnail_image.url
+        return None
 
 class FaqType(DjangoObjectType):
     class Meta:
