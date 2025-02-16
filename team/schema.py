@@ -1,23 +1,22 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 from .models import OurTeam
+from graphene_django_pagination import DjangoPaginationConnectionField
+
 
 # Define a GraphQL type for the OurTeam model
 class OurTeamType(DjangoObjectType):
     class Meta:
         model = OurTeam
-        fields = "__all__"
+        filter_fields = ['id']
 
 # Define a query to list all team members
 class Query(graphene.ObjectType):
-    all_team_members = graphene.List(OurTeamType)
-    team_member_by_id = graphene.Field(OurTeamType, id=graphene.Int(required=True))
+    all_team_members = DjangoPaginationConnectionField(OurTeamType)
 
-    def resolve_all_team_members(self, info):
-        return OurTeam.objects.all()
+    def resolve_all_team_members(self, info, **kwargs):
+        return OurTeam.objects.filter(**kwargs)
 
-    def resolve_team_member_by_id(self, info, id):
-        return OurTeam.objects.get(pk=id)
 
 # Create the schema
 schema = graphene.Schema(query=Query)

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'tinymce',
     'team',
     'events',
+    'academy'
 ]
 
 GRAPHENE = {
@@ -56,6 +57,9 @@ GRAPHENE = {
         'authentication.schema.schema',  # Existing schema
         'blog.schema.schema',  # New schema from blog app
         'events.schema.schema',
+        'academy.schema.schema',
+        'team.schema.schema'
+
     ]
 }
 
