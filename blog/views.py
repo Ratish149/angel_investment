@@ -39,15 +39,12 @@ class PostDetailView(generics.RetrieveUpdateAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         post = self.get_object()
-        html_string = post.blog_content
-        updated_html_string = html_string
-        
+ 
         similar_posts = Post.objects.filter(tags__in=post.tags.all()).exclude(slug=post.slug).distinct()[:5]
         similar_serializer = PostSmallSerializer(similar_posts, many=True)
         
         return Response({
             "data": self.get_serializer(post).data,
-            "toc": updated_html_string,
             "similar_listings": similar_serializer.data,
         })
 
