@@ -7,7 +7,7 @@ from graphene_django_pagination import DjangoPaginationConnectionField
 class ArticleType(DjangoObjectType):
     class Meta:
         model = Article
-        filter_fields = ['academy__slug']
+        filter_fields = ['academy__slug','slug']
 
 class AcademyType(DjangoObjectType):
     total_articles = graphene.Int()

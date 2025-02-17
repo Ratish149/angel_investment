@@ -11,9 +11,10 @@ class Academy(SlugMixin,models.Model):
     def __str__(self):
         return self.title
 
-class Article(models.Model):
+class Article(SlugMixin,models.Model):
     academy=models.ForeignKey(Academy, on_delete=models.DO_NOTHING)
     title=models.CharField(max_length=220)
+    slug=models.SlugField(max_length=220, unique=True, null=True, blank=True)
     description=models.TextField()
     content=models.TextField(null=True, blank=True)
     file=models.FileField(upload_to='academy_files/', null=True, blank=True)

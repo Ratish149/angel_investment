@@ -58,7 +58,7 @@ class FaqType(DjangoObjectType):
 class ArticleType(DjangoObjectType):
     class Meta:
         model = Article
-        filter_fields = ['academy__slug']
+        filter_fields = ['academy__slug','slug']
 
 class AcademyType(DjangoObjectType):
     total_articles = graphene.Int()
