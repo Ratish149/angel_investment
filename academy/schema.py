@@ -7,17 +7,23 @@ from graphene_django_pagination import DjangoPaginationConnectionField
 class ArticleType(DjangoObjectType):
     class Meta:
         model = Article
-        filter_fields = ['academy__id']
+        filter_fields = ['academy__slug']
 
 class AcademyType(DjangoObjectType):
     total_articles = graphene.Int()
+    logo=graphene.String()
 
     class Meta:
         model = Academy
-        fields = ('id', 'title', 'logo', 'description', 'total_articles')
+        fields = ('id', 'title', 'slug','logo', 'description', 'total_articles')
 
     def resolve_total_articles(self, info):
         return self.article_set.count()
+    
+    def resolve_logo(self, info):
+        if self.logo:
+            return self.logo.url
+        return None
 
 class Query(graphene.ObjectType):
     articles = DjangoPaginationConnectionField(ArticleType)

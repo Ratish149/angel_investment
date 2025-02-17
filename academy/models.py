@@ -1,9 +1,10 @@
 from django.db import models
-
+from blog.models import SlugMixin
 # Create your models here.
 
-class Academy(models.Model):
+class Academy(SlugMixin,models.Model):
     title = models.CharField(max_length=220)
+    slug=models.SlugField(max_length=220, unique=True, null=True, blank=True)
     logo = models.FileField(upload_to='chapter_logos/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
