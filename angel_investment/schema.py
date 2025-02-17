@@ -109,7 +109,7 @@ class Query(graphene.ObjectType):
     all_categories = graphene.List(CategoryType)
     all_tags = graphene.List(TagType)
     all_posts = DjangoPaginationConnectionField(PostType)
-    all_faqs = graphene.List(FaqType)
+    all_faqs = DjangoPaginationConnectionField(FaqType)
 
     articles = DjangoPaginationConnectionField(ArticleType)
     academy = graphene.List(AcademyType)
