@@ -62,6 +62,7 @@ class ArticleType(DjangoObjectType):
 
 class AcademyType(DjangoObjectType):
     total_articles = graphene.Int()
+    logo=graphene.String()
 
     class Meta:
         model = Academy
@@ -69,6 +70,11 @@ class AcademyType(DjangoObjectType):
 
     def resolve_total_articles(self, info):
         return self.article_set.count()
+    
+    def resolve_logo(self, info):
+        if self.logo:
+            return self.logo.url
+        return None
 
 class CustomUserType(DjangoObjectType):
     class Meta:
