@@ -15,7 +15,7 @@ class Article(SlugMixin,models.Model):
     academy=models.ForeignKey(Academy, on_delete=models.DO_NOTHING)
     title=models.CharField(max_length=220)
     slug=models.SlugField(max_length=220, unique=True, null=True, blank=True)
-    description=models.TextField()
+    description=models.CharField(max_length=220, null=True, blank=True)
     content=models.TextField(null=True, blank=True)
     file=models.FileField(upload_to='academy_files/', null=True, blank=True)
     video_link=models.URLField(null=True, blank=True)
