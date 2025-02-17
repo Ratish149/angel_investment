@@ -30,7 +30,7 @@ class PostType(DjangoObjectType):
 class FaqType(DjangoObjectType):
     class Meta:
         model = Faq
-        filter_fields = ['question']
+        filter_fields = ['category','question']
 
 
 class Query(graphene.ObjectType):

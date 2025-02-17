@@ -20,6 +20,7 @@ class OurTeamType(DjangoObjectType):
         if self.profile_picture:
             return self.profile_picture.url
         return None
+    
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
@@ -52,7 +53,7 @@ class PostType(DjangoObjectType):
 class FaqType(DjangoObjectType):
     class Meta:
         model = Faq
-        filter_fields = ['question']
+        filter_fields = ['category','question']
 
 class AcademyType(DjangoObjectType):
     class Meta:

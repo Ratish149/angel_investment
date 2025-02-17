@@ -70,10 +70,17 @@ class Post(SlugMixin,models.Model):
         return self.title
 
 class Faq(models.Model):
+    CATEGORY_CHOICES = (
+        ('General', 'General'),
+        ('Startup', 'Startup'),
+        ('Investor', 'Investor'),
+        ('Mentor', 'Mentor'),
+    )
+    category=models.CharField(max_length=20,choices=CATEGORY_CHOICES, null=True, blank=True)
     question = models.CharField(max_length=200)
     answer = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.question
+        return f'{self.question} - {self.answer}'
