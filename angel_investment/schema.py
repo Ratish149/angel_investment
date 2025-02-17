@@ -57,7 +57,7 @@ class FaqType(DjangoObjectType):
 class AcademyType(DjangoObjectType):
     class Meta:
         model = Academy
-        filter_fields = ['chapter']
+        filter_fields = ['chapter__id']
 
 class ChapterType(DjangoObjectType):
     class Meta:
