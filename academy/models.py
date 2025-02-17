@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Chapter(models.Model):
+class Academy(models.Model):
     title = models.CharField(max_length=220)
     logo = models.FileField(upload_to='chapter_logos/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -10,8 +10,8 @@ class Chapter(models.Model):
     def __str__(self):
         return self.title
 
-class Academy(models.Model):
-    chapter=models.ForeignKey(Chapter, on_delete=models.DO_NOTHING)
+class Article(models.Model):
+    academy=models.ForeignKey(Academy, on_delete=models.DO_NOTHING)
     title=models.CharField(max_length=220)
     description=models.TextField()
     content=models.TextField(null=True, blank=True)

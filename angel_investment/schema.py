@@ -3,7 +3,7 @@ from graphene_django.types import DjangoObjectType
 from team.models import OurTeam
 from events.models import Event
 from blog.models import Author, Category, Tag, Post, Faq
-from academy.models import Academy, Chapter
+from academy.models import Academy, Article
 from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam
 from graphene_django_pagination import DjangoPaginationConnectionField
 
@@ -55,14 +55,14 @@ class FaqType(DjangoObjectType):
         model = Faq
         filter_fields = ['category','question']
 
+class ArticleType(DjangoObjectType):
+    class Meta:
+        model = Article
+        filter_fields = ['academy__id']
+
 class AcademyType(DjangoObjectType):
     class Meta:
         model = Academy
-        filter_fields = ['chapter__id']
-
-class ChapterType(DjangoObjectType):
-    class Meta:
-        model = Chapter
 
 class CustomUserType(DjangoObjectType):
     class Meta:
@@ -99,8 +99,8 @@ class Query(graphene.ObjectType):
     all_posts = DjangoPaginationConnectionField(PostType)
     all_faqs = graphene.List(FaqType)
 
-    academies = DjangoPaginationConnectionField(AcademyType)
-    chapters = graphene.List(ChapterType)
+    articles = DjangoPaginationConnectionField(ArticleType)
+    academy = graphene.List(AcademyType)
         
     custom_users = graphene.List(CustomUserType)
     companies = DjangoPaginationConnectionField(CompanyType)
@@ -120,11 +120,11 @@ class Query(graphene.ObjectType):
     def resolve_company_teams(self, info, **kwargs):
         return CompanyTeam.objects.all()
 
-    def resolve_academies(self, info, **kwargs):
+    def resolve_academy(self, info, **kwargs):
         return Academy.objects.all()
 
-    def resolve_chapters(self, info, **kwargs):
-        return Chapter.objects.all()
+    def resolve_articles(self, info, **kwargs):
+        return Article.objects.all()
 
     def resolve_all_authors(self, info, **kwargs):
         return Author.objects.all()
