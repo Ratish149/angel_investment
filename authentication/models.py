@@ -66,6 +66,7 @@ class Company(models.Model):
     checkmark2=models.CharField(max_length=100, null=True, blank=True)
     checkmark3=models.CharField(max_length=100, null=True, blank=True)
     about_startup=models.TextField(null=True, blank=True)
+    featured=models.BooleanField(default=False)
 
     def __str__(self):
         return self.company_name
