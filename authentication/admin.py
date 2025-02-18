@@ -22,8 +22,12 @@ class CompanyTagAdmin(ModelAdmin):
     search_fields = ('name',)
 
 class CompanyTeamAdmin(ModelAdmin):
-    list_display = ('name', 'position', 'linkedin')
+    list_display = ('name', 'position', 'linkedin', 'get_company_name')
     search_fields = ('name', 'position', 'linkedin')
+
+    def get_company_name(self, obj):
+        return ", ".join([company.company_name for company in obj.company_set.all()])
+    get_company_name.short_description = 'Company Name'
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Company, CompanyAdmin)

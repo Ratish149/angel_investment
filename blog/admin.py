@@ -4,10 +4,19 @@ from unfold.admin import ModelAdmin
 from tinymce.widgets import TinyMCE
 from django.db import models
 
-admin.site.register(Author, ModelAdmin)
-admin.site.register(Category, ModelAdmin)
-admin.site.register(Tag, ModelAdmin)
+class AuthorAdmin(ModelAdmin):
+    list_display = ('name', 'role', 'phone', 'created_at')  # Specify fields to display
+    search_fields = ('name', 'role', 'phone')
 
+admin.site.register(Author, AuthorAdmin)
+admin.site.register(Category, ModelAdmin)
+
+class TagAdmin(ModelAdmin):
+    list_display = ('tag_name',)
+    search_fields = ('post__title',)
+    list_filter = ('post__title',)
+
+admin.site.register(Tag, TagAdmin)
 
 class TinyMce(ModelAdmin):
     list_display = ('title', 'author', 'created_at', 'category', 'blog_duration_to_read')
@@ -16,5 +25,11 @@ class TinyMce(ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE,},
     }
+
+# Add list_display and list_filter for Faq
+class FaqAdmin(ModelAdmin):
+    list_display = ('question', 'category', 'created_at')
+    list_filter = ('category',)
+    
 admin.site.register(Post,TinyMce)
-admin.site.register(Faq,ModelAdmin)
+admin.site.register(Faq, FaqAdmin)
