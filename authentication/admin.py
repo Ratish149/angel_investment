@@ -6,10 +6,13 @@ from tinymce.widgets import TinyMCE
 # Register your models here.
 
 class CustomUserAdmin(ModelAdmin):
-    list_display = ('full_name','email', 'role', 'is_activated','is_staff')
+    list_display = ('full_name','email', 'get_company_name','role', 'is_activated','is_staff')
     list_filter = ('role', 'is_activated')
     search_fields = ('full_name','email','first_name')
 
+    def get_company_name(self, obj):
+        return ", ".join([company.company_name for company in obj.company_set.all()])
+    get_company_name.short_description = 'Company Name'
 
 class CompanyAdmin(ModelAdmin):
     list_display = ('company_name', 'stage', 'contact_city', 'contact_country', 'contact_phone_number', 'contact_email', 'website', 'amount_raising', 'affiliation')
