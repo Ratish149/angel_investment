@@ -11,7 +11,10 @@ class CompanyType(DjangoObjectType):
     logo=graphene.String()
     class Meta:
         model = Company
-        filter_fields = ['id']
+        filter_fields = {
+            'id': ['exact'],          # Allow filtering by company ID
+            'user__role': ['exact'],  # Allow filtering by user role
+        }
     
     def resolve_logo(self, info):
         if self.logo:
