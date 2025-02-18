@@ -14,6 +14,7 @@ class CompanyType(DjangoObjectType):
         filter_fields = {
             'id': ['exact'],          # Allow filtering by company ID
             'user__role': ['exact'],  # Allow filtering by user role
+            'featured': ['exact'],
         }
     
     def resolve_logo(self, info):
