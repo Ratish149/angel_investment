@@ -18,8 +18,11 @@ class CompanyAdmin(ModelAdmin):
 
 
 class CompanyTagAdmin(ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name','get_company_name')
     search_fields = ('name',)
+    def get_company_name(self, obj):
+        return ", ".join([company.company_name for company in obj.company_set.all()])
+    get_company_name.short_description = 'Company Name'
 
 class CompanyTeamAdmin(ModelAdmin):
     list_display = ('name', 'position', 'linkedin', 'get_company_name')
