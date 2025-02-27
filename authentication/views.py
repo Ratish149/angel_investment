@@ -53,7 +53,7 @@ class UserRegistrationView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
     def send_activation_email(self, user):
-        activation_link = f"http://127.0.0.1:8000/api/activate/{user.id}/"
+        activation_link = f"http://investly.baliyoventures.com/api/activate/{user.id}/"
 
         subject = "Activate Your Angel Investment Account"
         html_message = render_to_string("activation_email.html", {"user": user, "activation_link": activation_link})
@@ -73,7 +73,7 @@ def activate_account(request, user_id):
     if not user.is_active:
         user.is_activated = True
         user.save()
-        return redirect("http://www.google.com")
+        return redirect("https://investly-frontend-lyart.vercel.app/")
 
     return HttpResponse("Account already activated.")
 
@@ -152,7 +152,7 @@ class ChangeEmailView(generics.UpdateAPIView):
         return Response({'message': 'A verification email has been sent to your new email address. Please click the link in the email to verify your new email.'}, status=status.HTTP_200_OK)
 
     def send_verification_email(self, user, new_email):
-        verification_link = f"http://127.0.0.1:8000/api/verify/{user.id}/email/{new_email}/"
+        verification_link = f"https://investly.baliyoventures.com/api/verify/{user.id}/email/{new_email}/"
 
         subject = "Verify Your New Email"
         html_message = render_to_string("verify_email.html", {"user": user, "verification_link": verification_link, "new_email": new_email})
@@ -170,6 +170,6 @@ def verify_email(request, user_id, new_email):
     user.email = new_email
     user.username = new_email
     user.save()
-    return redirect("http://www.google.com")
+    return redirect("https://investly-frontend-lyart.vercel.app/")
 
     

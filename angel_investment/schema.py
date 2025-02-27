@@ -7,7 +7,6 @@ from academy.models import Academy, Article
 from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam
 from graphene_django_pagination import DjangoPaginationConnectionField
 
-
 # Define a GraphQL type for the OurTeam model
 class OurTeamType(DjangoObjectType):
     profilePicture=graphene.String()
