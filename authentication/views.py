@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import generics
-from .models import CustomUser, Company, CompanyTag, CompanyTeam
-from .serializers import CustomUserSerializer, LoginSerializer,CompanySmallSerializer, CompanySerializer, CompanyTagSerializer, CompanyTeamSerializer
+from .models import CustomUser, Company, CompanyTag, CompanyTeam, Users
+from .serializers import CustomUserSerializer, LoginSerializer,CompanySmallSerializer, CompanySerializer, CompanyTagSerializer, CompanyTeamSerializer, UsersSerializer, VerifyLoginCodeSerializer
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -14,6 +14,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
+import time
+import hashlib
 
 
 # Create your views here.
@@ -62,42 +64,42 @@ class UserRegistrationView(generics.CreateAPIView):
         send_mail(
             subject,
             plain_message,
-            settings.EMAIL_HOST_USER,
+            settings.DEFAULT_FROM_EMAIL,
             [user.email],
             html_message=html_message,
         )
 
 def activate_account(request, user_id):
-    user = get_object_or_404(CustomUser, id=user_id)
+    user = get_object_or_404(Users, id=user_id)
 
-    if not user.is_active:
+    if not user.is_activated:
         user.is_activated = True
         user.save()
         return redirect("https://investly-frontend-lyart.vercel.app/")
 
     return HttpResponse("Account already activated.")
 
-class LoginView(APIView):
-    serializer_class = LoginSerializer
+# class LoginView(APIView):
+#     serializer_class = LoginSerializer
 
-    def post(self, request):
+#     def post(self, request):
         
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(username=email, password=password)
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+#         user = authenticate(username=email, password=password)
          
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'message': "Login successful!",
-                'user': CustomUserSerializer(user).data,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'is_active': user.is_activated
-            }, status=status.HTTP_200_OK)
+#         if user is not None:
+#             refresh = RefreshToken.for_user(user)
+#             return Response({
+#                 'message': "Login successful!",
+#                 'user': CustomUserSerializer(user).data,
+#                 'refresh': str(refresh),
+#                 'access': str(refresh.access_token),
+#                 'is_active': user.is_activated
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            raise ValidationError({'error': 'Incorrect email or password.'})
+#         else:
+#             raise ValidationError({'error': 'Incorrect email or password.'})
 
 class CompanyListCreateView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
@@ -161,15 +163,135 @@ class ChangeEmailView(generics.UpdateAPIView):
         send_mail(
             subject,
             plain_message,
-            settings.EMAIL_HOST_USER,
+            settings.DEFAULT_FROM_EMAIL,
             [new_email],
             html_message=html_message,
         )
+
 def verify_email(request, user_id, new_email):
-    user = get_object_or_404(CustomUser, id=user_id)
+    user = get_object_or_404(Users, id=user_id)
     user.email = new_email
     user.username = new_email
     user.save()
     return redirect("https://investly-frontend-lyart.vercel.app/")
+
+class UsersListCreateView(generics.ListCreateAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer
+
+    def perform_create(self, serializer):
+        # Check if email already exists
+        email = self.request.data.get('email')
+        if Users.objects.filter(email=email).exists():
+            raise ValidationError({'message': 'This email is already registered.'})
+
+        user = serializer.save()
+        user.is_activated = False  # Keep inactive until verified
+        user.save()
+        
+        # Send activation email
+        self.send_activation_email(user)
+
+    def send_activation_email(self, user):
+        activation_link = f"https://www.investly.baliyoventures.com/api/activate/{user.id}/"
+
+        subject = "Activate Your Angel Investment Account"
+        html_message = render_to_string("activation_email.html", {"user": user, "activation_link": activation_link})
+        plain_message = strip_tags(html_message)
+
+        send_mail(
+            subject,
+            plain_message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            html_message=html_message,
+        )
+
+class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer
+
+
+class UserLoginView(APIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            raise ValidationError({'email': 'Email is required.'})
+        
+        user = Users.objects.filter(email=email).first()
+        if not user:
+            raise ValidationError({'email': 'User not found.'})
+        if not user.is_activated:
+            raise ValidationError({'email': 'User is not activated.'})
+
+        # Generate verification code and save it to user model
+        verification_code = self.generate_verification_code(user.id)
+        user.verification_code = verification_code
+        user.save()
+
+        self.send_verification_code(user, verification_code)
+        
+        return Response({
+            'message': 'Verification code sent to your email.',
+            'email': email
+        }, status=status.HTTP_200_OK)
+
+    def generate_verification_code(self, user_id):
+        timestamp = int(time.time() // 300)  # 300 seconds = 5 minutes
+        message = f"{user_id}{timestamp}{settings.SECRET_KEY}"
+        hash_object = hashlib.sha256(message.encode())
+        return str(int(hash_object.hexdigest(), 16))[:6]
+
+    def send_verification_code(self, user, code):
+        subject = "Your Login Verification Code"
+        html_message = render_to_string(
+            "verification_code_email.html", 
+            {
+                "user": user, 
+                "code": code
+            }
+        )
+        plain_message = strip_tags(html_message)
+
+        send_mail(
+            subject,
+            plain_message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            html_message=html_message,
+        )
+
+class VerifyLoginCodeView(APIView):
+    serializer_class = VerifyLoginCodeSerializer
+    def post(self, request):
+        email = request.data.get('email')
+        submitted_code = request.data.get('code')
+
+        if not all([email, submitted_code]):
+            raise ValidationError({'error': 'Email and code are required'})
+
+        user = Users.objects.filter(email=email).first()
+        if not user:
+            raise ValidationError({'error': 'User not found'})
+
+        # Check the stored verification code
+        if submitted_code != user.verification_code:
+            raise ValidationError({'error': 'Invalid verification code'})
+
+        # Clear the verification code after successful use
+        user.verification_code = None
+        user.save()
+
+        # Create tokens and complete login
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            'message': 'Login successful.',
+            'user': UsersSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
 
     

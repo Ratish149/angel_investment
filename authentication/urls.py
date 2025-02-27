@@ -1,15 +1,15 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import UserRegistrationView, LoginView,CustomUserListCreateView, CustomUserRetrieveUpdateDestroyView, CompanyListCreateView, CompanyRetrieveUpdateDestroyView, CompanyTagListCreateView, CompanyTagRetrieveUpdateDestroyView, CompanyTeamListCreateView, CompanyTeamRetrieveUpdateDestroyView,activate_account, ChangeEmailView,verify_email
+from .views import UserRegistrationView, UserLoginView,CustomUserListCreateView, CustomUserRetrieveUpdateDestroyView, CompanyListCreateView, CompanyRetrieveUpdateDestroyView, CompanyTagListCreateView, CompanyTagRetrieveUpdateDestroyView, CompanyTeamListCreateView, CompanyTeamRetrieveUpdateDestroyView, VerifyLoginCodeView,activate_account, ChangeEmailView,verify_email, UsersListCreateView, UsersRetrieveUpdateDestroyView
 from graphene_django.views import GraphQLView
 from .schema import schema
 
 
 urlpatterns = [
-    path('users/', CustomUserListCreateView.as_view(), name='user-list'),
-    path('users/<int:pk>/', CustomUserRetrieveUpdateDestroyView.as_view(), name='user-detail'),
+    # path('users/', CustomUserListCreateView.as_view(), name='user-list'),
+    # path('users/<int:pk>/', CustomUserRetrieveUpdateDestroyView.as_view(), name='user-detail'),
     path('register/', UserRegistrationView.as_view(), name='register'),
-    path('login/',LoginView.as_view(),name='login'),
+    path('login/',UserLoginView.as_view(),name='login'),
     path('change-email/', ChangeEmailView.as_view(), name='change-email'),
     path('verify/<int:user_id>/email/<str:new_email>/', verify_email, name='verify-email'),
 
@@ -27,7 +27,8 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('auth/graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),  # Enable GraphiQL interface
 
-    
-
+    path('users/', UsersListCreateView.as_view(), name='users-list-create'),
+    path('users/<int:pk>/', UsersRetrieveUpdateDestroyView.as_view(), name='users-detail'),
+    path('verify-login-code/', VerifyLoginCodeView.as_view(), name='verify-login-code'),
 
 ]

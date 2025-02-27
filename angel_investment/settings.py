@@ -226,4 +226,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'bdevil149@gmail.com'
 EMAIL_HOST_PASSWORD = 'agkr agoi ulip lwcp'
 
-DEFAULT_FROM_EMAIL = 'Angel Investment <AngelInvestment@gmail.com>'
+DEFAULT_FROM_EMAIL = 'Investly <investly@gmail.com>'

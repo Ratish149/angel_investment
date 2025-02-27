@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activate Your Account</title>
+    <title>Login Verification Code</title>
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 20px;">
     <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
         <img src="https://your-logo-url.com/logo.png" alt="Leapfunder Logo" style="width: 150px; margin-bottom: 20px;">
         <h2>Dear {{ user.full_name }},</h2>
-        <p>You're joining Europe's leading angel club. Thank you for signing up on Leapfunder.</p>
-        <p>Please activate your account by clicking the button below:</p>
-        <a href="{{ activation_link }}" 
-           style="background-color: orange; color: white; padding: 15px 25px; text-decoration: none; 
-                  border-radius: 5px; display: inline-block; font-size: 16px; margin-top: 10px;">
-            Activate my account
-        </a>
-        <p style="margin-top: 20px;">We're here to support you every step of the way.</p>
+        <p>Thank you for logging in to Investly. To complete your login, please use the verification code below:</p>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #333;">{{ code }}</span>
+        </div>
+        <p style="color: #666; font-size: 14px;">This code will expire in 5 minutes.</p>
+        <p style="margin-top: 20px;">If you didn't request this code, please ignore this email.</p>
         <p>Your Investly team</p>
     </div>
 </body>
-</html>
+</html> 

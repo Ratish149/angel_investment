@@ -1,6 +1,13 @@
 from rest_framework import serializers
-from .models import CustomUser, Company, CompanyTag, CompanyTeam
+from .models import CustomUser, Company, CompanyTag, CompanyTeam, Users
 
+
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['id', 'full_name', 'email', 'role', 'organization_name', 
+                 'contact_number', 'about_you', 'website_link', 'document']
+    
 class CustomUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
@@ -25,7 +32,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    password = serializers.CharField()
+
+class VerifyLoginCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()
 
 class CompanySmallSerializer(serializers.ModelSerializer):
     class Meta:

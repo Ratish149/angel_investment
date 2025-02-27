@@ -15,7 +15,25 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
     
+class Users(models.Model):
+    ROLE_CHOICES = (
+        ('Investor', 'Investor'),
+        ('Mentor', 'Mentor'),
+        ('Startup', 'Startup')
+    )
+    full_name=models.CharField(max_length=100)
+    organization_name=models.CharField(max_length=100)
+    email=models.EmailField(max_length=100)
+    contact_number=models.CharField(max_length=100)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    about_you=models.TextField(null=True, blank=True)
+    website_link=models.URLField(max_length=100, null=True, blank=True)
+    document=models.FileField(upload_to='documents/', null=True, blank=True)
+    is_activated=models.BooleanField(default=False)
+    verification_code=models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.full_name} - {self.organization_name}"
 
 class CompanyTag(models.Model):
     name=models.CharField(max_length=100)
