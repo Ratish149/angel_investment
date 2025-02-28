@@ -247,7 +247,10 @@ class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user
+        # Get the email from the authenticated CustomUser
+        email = self.request.user.email
+        # Return the corresponding Users model instance
+        return get_object_or_404(Users, email=email)
     
     def get(self, request, *args, **kwargs):
         user = self.get_object()
