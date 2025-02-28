@@ -118,7 +118,16 @@ def activate_account(request):
     if not user.is_activated:
         user.is_activated = True
         user.save()
-        return Response({"message": "Account successfully activated"}, status=status.HTTP_200_OK)
+
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'message': "Account successfully activated",
+            'user': UsersSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
 
     return Response({"message": "Account already activated"}, status=status.HTTP_200_OK)
 
