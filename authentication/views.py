@@ -243,8 +243,11 @@ class UsersListCreateView(generics.ListCreateAPIView):
         )
 
 class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Users.objects.all()
     serializer_class = UsersSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 
 class UserLoginView(APIView):
@@ -340,3 +343,4 @@ class VerifyLoginCodeView(APIView):
         }, status=status.HTTP_200_OK)
 
     
+     
