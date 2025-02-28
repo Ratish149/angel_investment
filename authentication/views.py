@@ -131,27 +131,6 @@ def activate_account(request):
 
     return Response({"message": "Account already activated"}, status=status.HTTP_200_OK)
 
-# class LoginView(APIView):
-#     serializer_class = LoginSerializer
-
-#     def post(self, request):
-        
-#         email = request.data.get('email')
-#         password = request.data.get('password')
-#         user = authenticate(username=email, password=password)
-         
-#         if user is not None:
-#             refresh = RefreshToken.for_user(user)
-#             return Response({
-#                 'message': "Login successful!",
-#                 'user': CustomUserSerializer(user).data,
-#                 'refresh': str(refresh),
-#                 'access': str(refresh.access_token),
-#                 'is_active': user.is_activated
-#             }, status=status.HTTP_200_OK)
-
-#         else:
-#             raise ValidationError({'error': 'Incorrect email or password.'})
 
 class CompanyListCreateView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
@@ -281,18 +260,28 @@ class UserLoginView(APIView):
             raise ValidationError({'email': 'User not found.'})
         if not user.is_activated:
             raise ValidationError({'email': 'User is not activated.'})
-
-        # Generate verification code and save it to user model
-        verification_code = self.generate_verification_code(user.id)
-        user.verification_code = verification_code
-        user.save()
-
-        self.send_verification_code(user, verification_code)
         
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+
         return Response({
-            'message': 'Verification code sent to your email.',
-            'email': email
+            'message': 'Login successful.',
+            'user': UsersSerializer(user).data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
+
+        # # Generate verification code and save it to user model
+        # verification_code = self.generate_verification_code(user.id)
+        # user.verification_code = verification_code
+        # user.save()
+
+        # self.send_verification_code(user, verification_code)
+        
+        # return Response({
+        #     'message': 'Verification code sent to your email.',
+        #     'email': email
+        # }, status=status.HTTP_200_OK)
 
     def generate_verification_code(self, user_id):
         timestamp = int(time.time() // 300)  # 300 seconds = 5 minutes
