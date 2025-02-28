@@ -244,13 +244,12 @@ class UsersListCreateView(generics.ListCreateAPIView):
 
 class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UsersSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = Users.objects.all()
 
     def get_object(self):
-        # Get the email from the authenticated CustomUser
-        email = self.request.user.email
-        # Return the corresponding Users model instance
-        return get_object_or_404(Users, email=email)
+        # Get the user ID from the URL
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Users, id=pk)
     
     def get(self, request, *args, **kwargs):
         user = self.get_object()

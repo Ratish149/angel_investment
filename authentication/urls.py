@@ -28,7 +28,7 @@ urlpatterns = [
     path('auth/graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),  # Enable GraphiQL interface
 
     path('users/', UsersListCreateView.as_view(), name='users-list-create'),
-    path('users/profile/', UsersRetrieveUpdateDestroyView.as_view(), name='user-profile'),
+    path('users/<int:pk>/', UsersRetrieveUpdateDestroyView.as_view(), name='user-profile'),
     path('verify-login-code/', VerifyLoginCodeView.as_view(), name='verify-login-code'),
 
 ]
