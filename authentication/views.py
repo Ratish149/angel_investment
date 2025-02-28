@@ -16,6 +16,9 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 import time
 import hashlib
+import base64
+import hmac
+from rest_framework.decorators import api_view
 
 
 # Create your views here.
@@ -69,15 +72,55 @@ class UserRegistrationView(generics.CreateAPIView):
             html_message=html_message,
         )
 
-def activate_account(request, user_id):
-    user = get_object_or_404(Users, id=user_id)
+def encode_user_id(user_id):
+    """Encode user ID with timestamp to create activation token"""
+    timestamp = str(int(time.time()))
+    message = f"{user_id}:{timestamp}"
+    # Create a hash using user_id, timestamp, and secret key
+    signature = hashlib.sha256(f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
+    # Combine all parts
+    token = f"{message}:{signature}"
+    # Convert to base64 to make it URL-safe
+    return base64.urlsafe_b64encode(token.encode()).decode()
 
+def decode_user_id(token, max_age=72*3600):  # 72 hours expiry
+    try:
+        # Decode base64
+        decoded = base64.urlsafe_b64decode(token.encode()).decode()
+        # Split parts
+        user_id_str, timestamp_str, signature = decoded.rsplit(':', 2)
+        # Verify signature
+        message = f"{user_id_str}:{timestamp_str}"
+        expected_signature = hashlib.sha256(f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
+        if not hmac.compare_digest(signature, expected_signature):
+            return None
+        
+        # Check timestamp
+        timestamp = int(timestamp_str)
+        if time.time() - timestamp > max_age:
+            return None
+        
+        return int(user_id_str)
+    except Exception:
+        return None
+
+@api_view(['POST'])
+def activate_account(request):
+    token = request.data.get('token')
+    if not token:
+        return Response({"error": "Activation token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_id = decode_user_id(token)
+    if not user_id:
+        return Response({"error": "Invalid or expired activation link"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = get_object_or_404(Users, id=user_id)
     if not user.is_activated:
         user.is_activated = True
         user.save()
-        return redirect("https://investly-frontend-lyart.vercel.app/")
+        return Response({"message": "Account successfully activated"}, status=status.HTTP_200_OK)
 
-    return HttpResponse("Account already activated.")
+    return Response({"message": "Account already activated"}, status=status.HTTP_200_OK)
 
 # class LoginView(APIView):
 #     serializer_class = LoginSerializer
@@ -180,30 +223,34 @@ class UsersListCreateView(generics.ListCreateAPIView):
     serializer_class = UsersSerializer
 
     def perform_create(self, serializer):
-        # Check if email already exists
         email = self.request.data.get('email')
         if Users.objects.filter(email=email).exists():
             raise ValidationError({'message': 'This email is already registered.'})
 
         user = serializer.save()
-        user.is_activated = False  # Keep inactive until verified
+        user.is_activated = False
         user.save()
         
-        # Send activation email
-        self.send_activation_email(user)
+        # Send activation email with encoded token
+        self.send_activation_email(user, email)
 
-    def send_activation_email(self, user):
-        activation_link = f"https://www.investly.baliyoventures.com/api/activate/{user.id}/"
-
+    def send_activation_email(self, user, email):
+        # Generate activation token from user ID
+        activation_token = encode_user_id(user.id)
+        activation_link = f"https://localhost:3000/activate/{activation_token}/"
+        
         subject = "Activate Your Angel Investment Account"
-        html_message = render_to_string("activation_email.html", {"user": user, "activation_link": activation_link})
+        html_message = render_to_string("activation_email.html", {
+            "user": user, 
+            "activation_link": activation_link
+        })
         plain_message = strip_tags(html_message)
 
         send_mail(
             subject,
             plain_message,
             settings.DEFAULT_FROM_EMAIL,
-            [user.email],
+            [email],
             html_message=html_message,
         )
 
