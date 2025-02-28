@@ -237,7 +237,7 @@ class UsersListCreateView(generics.ListCreateAPIView):
     def send_activation_email(self, user, email):
         # Generate activation token from user ID
         activation_token = encode_user_id(user.id)
-        activation_link = f"https://localhost:3000/activate/{activation_token}/"
+        activation_link = f"http://localhost:3000/activate/{activation_token}/"
         
         subject = "Activate Your Angel Investment Account"
         html_message = render_to_string("activation_email.html", {
