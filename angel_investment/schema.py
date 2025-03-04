@@ -4,7 +4,7 @@ from team.models import OurTeam
 from events.models import Event
 from blog.models import Author, Category, Tag, Post, Faq
 from academy.models import Academy, Article
-from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam
+from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam, Users
 from graphene_django_pagination import DjangoPaginationConnectionField
 
 # Define a GraphQL type for the OurTeam model
@@ -80,19 +80,19 @@ class CustomUserType(DjangoObjectType):
         model = CustomUser
 
 class CompanyType(DjangoObjectType):
-    logo=graphene.String()
+    organization_logo = graphene.String()
     class Meta:
-        model = Company
+        model = Users
         filter_fields = {
             'id': ['exact'],          # Allow filtering by company ID
-            'user__role': ['exact'],  # Allow filtering by user role
-            'featured': ['exact'],
+            'is_activated': ['exact'],
+            'role': ['exact'],
         }
-    
-    def resolve_logo(self, info):
-        if self.logo:
-            return self.logo.url
-        return None    
+
+    def resolve_organization_logo(self, info):
+        if self.organization_logo:
+            return self.organization_logo.url
+        return None
 
 class CompanyTagType(DjangoObjectType):
     class Meta:
@@ -127,7 +127,7 @@ class Query(graphene.ObjectType):
         return CustomUser.objects.all()
 
     def resolve_companies(self, info, **kwargs):
-        return Company.objects.all()
+        return Users.objects.all()
 
     def resolve_company_tags(self, info, **kwargs):
         return CompanyTag.objects.all()

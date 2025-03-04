@@ -1,6 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from .models import CustomUser, Company, CompanyTag, CompanyTeam  # Import your models
+from .models import CustomUser, Company, CompanyTag, CompanyTeam, Users  # Import your models
 from graphene_django_pagination import DjangoPaginationConnectionField
 
 class CustomUserType(DjangoObjectType):
@@ -8,19 +8,19 @@ class CustomUserType(DjangoObjectType):
         model = CustomUser
 
 class CompanyType(DjangoObjectType):
-    logo=graphene.String()
+    organization_logo = graphene.String()
     class Meta:
-        model = Company
+        model = Users
         filter_fields = {
             'id': ['exact'],          # Allow filtering by company ID
-            'user__role': ['exact'],  # Allow filtering by user role
-            'featured': ['exact'],
+            'is_activated': ['exact'],
+            'role': ['exact'],
         }
-    
-    def resolve_logo(self, info):
-        if self.logo:
-            return self.logo.url
-        return None    
+
+    def resolve_organization_logo(self, info):
+        if self.organization_logo:
+            return self.organization_logo.url
+        return None
 
 class CompanyTagType(DjangoObjectType):
     class Meta:

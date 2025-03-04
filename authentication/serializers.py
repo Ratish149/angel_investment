@@ -5,7 +5,7 @@ from .models import CustomUser, Company, CompanyTag, CompanyTeam, Users
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['id', 'full_name', 'email', 'role', 'organization_name', 
+        fields = ['id', 'full_name', 'email', 'role', 'organization_name','organization_logo', 'organization_description', 
                  'contact_number', 'about_you', 'website_link', 'document']
     
 class CustomUserSerializer(serializers.ModelSerializer):
