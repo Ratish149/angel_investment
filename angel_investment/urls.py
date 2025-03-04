@@ -30,5 +30,6 @@ urlpatterns = [
     path('api/',include('team.urls')),
     path('api/',include('events.urls')),
     path('api/',include('academy.urls')),
+    path('api/',include('contact.urls')),
     path('api/graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

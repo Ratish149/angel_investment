@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'tinymce',
     'team',
     'events',
-    'academy'
+    'academy',
+    'contact',
 ]
 
 GRAPHENE = {

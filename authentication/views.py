@@ -286,26 +286,26 @@ class UserLoginView(APIView):
             raise ValidationError({'email': 'User is not activated.'})
         
         # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
+        # refresh = RefreshToken.for_user(user)
 
-        return Response({
-            'message': 'Login successful.',
-            'user': UsersSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
-
-        # # Generate verification code and save it to user model
-        # verification_code = self.generate_verification_code(user.id)
-        # user.verification_code = verification_code
-        # user.save()
-
-        # self.send_verification_code(user, verification_code)
-        
         # return Response({
-        #     'message': 'Verification code sent to your email.',
-        #     'email': email
+        #     'message': 'Login successful.',
+        #     'user': UsersSerializer(user).data,
+        #     'refresh': str(refresh),
+        #     'access': str(refresh.access_token),
         # }, status=status.HTTP_200_OK)
+
+        # Generate verification code and save it to user model
+        verification_code = self.generate_verification_code(user.id)
+        user.verification_code = verification_code
+        user.save()
+
+        self.send_verification_code(user, verification_code)
+        
+        return Response({
+            'message': 'Verification code sent to your email.',
+            'email': email
+        }, status=status.HTTP_200_OK)
 
     def generate_verification_code(self, user_id):
         timestamp = int(time.time() // 300)  # 300 seconds = 5 minutes
