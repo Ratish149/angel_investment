@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .serializers import ContactSerializer
+from .serializers import ContactSerializer,NewsletterSerializer
 from rest_framework import generics
-from .models import Contact
+from .models import Contact,Newsletter
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -32,3 +32,6 @@ class ContactView(generics.ListCreateAPIView):
             html_message=html_message,
         )
 
+class NewsletterView(generics.ListCreateAPIView):
+    queryset = Newsletter.objects.all()
+    serializer_class = NewsletterSerializer

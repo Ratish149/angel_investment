@@ -17,14 +17,12 @@ class CustomUser(AbstractUser):
     
 class Users(models.Model):
     ROLE_CHOICES = (
-        ('Investor', 'Investor'),
-        ('Mentor', 'Mentor'),
-        ('Startup', 'Startup')
+        ('Founder', 'Founder'),
+        ('Employee', 'Employee')
     )
     full_name=models.CharField(max_length=100)
     email=models.EmailField(max_length=100)
     contact_number=models.CharField(max_length=100)
-    about_you=models.TextField(null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     organization_name=models.CharField(max_length=100)
     organization_logo=models.FileField(upload_to='organization_logos/', null=True, blank=True)
