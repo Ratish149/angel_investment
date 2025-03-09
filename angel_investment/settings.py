@@ -215,8 +215,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 UNFOLD = {
-    "SITE_TITLE": "Angel Investment",
-    "SITE_HEADER": "Angel Investment",
+    "SITE_TITLE": "Biratnagar Angel Investment",
+    "SITE_HEADER": "Biratnagar Angel Investment",
     "THEME": "dark",
 }
 
