@@ -87,6 +87,7 @@ class CompanyType(DjangoObjectType):
             'id': ['exact'],          # Allow filtering by company ID
             'is_activated': ['exact'],
             'role': ['exact'],
+            'organization_role': ['exact'],
         }
 
     def resolve_organization_logo(self, info):

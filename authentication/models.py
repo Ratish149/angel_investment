@@ -16,6 +16,12 @@ class CustomUser(AbstractUser):
         return self.email
     
 class Users(models.Model):
+    ORGANIZATION_ROLE_CHOICES = (
+        ('Investor', 'Investor'),
+        ('Mentor', 'Mentor'),
+        ('Startup', 'Startup')
+    )
+    
     ROLE_CHOICES = (
         ('Founder', 'Founder'),
         ('Employee', 'Employee')
@@ -25,6 +31,8 @@ class Users(models.Model):
     contact_number=models.CharField(max_length=100)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     organization_name=models.CharField(max_length=100)
+    organization_role = models.CharField(max_length=10, choices=ORGANIZATION_ROLE_CHOICES)
+
     organization_logo=models.FileField(upload_to='organization_logos/', null=True, blank=True)
     organization_description=models.TextField(null=True, blank=True)
     website_link=models.URLField(max_length=100, null=True, blank=True)
