@@ -29,7 +29,7 @@ class Users(models.Model):
     full_name=models.CharField(max_length=100)
     email=models.EmailField(max_length=100)
     contact_number=models.CharField(max_length=100)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     organization_name=models.CharField(max_length=100, null=True, blank=True)
     organization_role = models.CharField(max_length=10, choices=ORGANIZATION_ROLE_CHOICES, null=True, blank=True)
     organization_logo=models.FileField(upload_to='organization_logos/', null=True, blank=True)
