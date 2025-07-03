@@ -24,9 +24,16 @@ class OurTeamType(DjangoObjectType):
 
 
 class OurPartnerType(DjangoObjectType):
+    logo = graphene.String()
+
     class Meta:
         model = OurPartner
         filter_fields = ['id']
+
+    def resolve_logo(self, info):
+        if self.logo:
+            return self.logo.url
+        return None
 
 
 class EventType(DjangoObjectType):
