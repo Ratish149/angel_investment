@@ -156,8 +156,8 @@ USE_I18N = True
 USE_TZ = True
 
 TINYMCE_DEFAULT_CONFIG = {
-    "height" : "780",
-    "width" : "780",
+    "height": "780",
+    "width": "780",
     "entity_encoding": "raw",
     "menubar": "file edit view insert format tools table help",
     "plugins": 'print preview paste importcss searchreplace autolink autosave save code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap emoticons quickbars',
@@ -195,7 +195,6 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -206,7 +205,6 @@ STATIC_ROOT = Path(BASE_DIR, "static/")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 
 # Default primary key field type
