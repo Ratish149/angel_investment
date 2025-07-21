@@ -12,3 +12,12 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+    
+class EventAttendee(models.Model):
+    event=models.ForeignKey(Event,on_delete=models.CASCADE)
+    email=models.EmailField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+    

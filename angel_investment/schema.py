@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 from team.models import OurTeam, OurPartner
-from events.models import Event
+from events.models import Event, EventAttendee
 from blog.models import Author, Category, Tag, Post, Faq
 from academy.models import Academy, Article
 from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam, Users
@@ -40,6 +40,12 @@ class EventType(DjangoObjectType):
     class Meta:
         model = Event
         filter_fields = ['id', 'title']
+
+
+class EventAttendeeType(DjangoObjectType):
+    class Meta:
+        model = EventAttendee
+        filter_fields = ['id', 'event', 'email', 'created_at']
 
 
 class AuthorType(DjangoObjectType):
@@ -197,5 +203,22 @@ class Query(graphene.ObjectType):
         return OurPartner.objects.all()
 
 
+class CreateEventAttendee(graphene.Mutation):
+    class Arguments:
+        event_id = graphene.ID(required=True)
+        email = graphene.String(required=True)
+
+    event_attendee = graphene.Field(EventAttendeeType)
+
+    def mutate(self, info, event_id, email):
+        event = Event.objects.get(pk=event_id)
+        attendee = EventAttendee.objects.create(event=event, email=email)
+        return CreateEventAttendee(event_attendee=attendee)
+
+
+class Mutation(graphene.ObjectType):
+    create_event_attendee = CreateEventAttendee.Field()
+
+
 # Create the schema
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutation)
