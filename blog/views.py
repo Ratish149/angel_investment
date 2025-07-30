@@ -36,7 +36,7 @@ class PostListSlugView(generics.ListAPIView):
     serializer_class = PostSlugSerializer
 
 
-class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+class PostDetailView(generics.RetrieveUpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSmallSerializer
     lookup_field = 'slug'

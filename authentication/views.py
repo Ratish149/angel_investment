@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import generics
 from .models import CustomUser, Company, CompanyTag, CompanyTeam, Users
-from .serializers import CustomUserSerializer, LoginSerializer,CompanySmallSerializer, CompanySerializer, CompanyTagSerializer, CompanyTeamSerializer, UsersSerializer, VerifyLoginCodeSerializer
+from .serializers import CustomUserSerializer, LoginSerializer, CompanySmallSerializer, CompanySerializer, CompanyTagSerializer, CompanyTeamSerializer, UsersSerializer, VerifyLoginCodeSerializer
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -27,9 +27,11 @@ class CustomUserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
+
 class CustomUserRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = CustomUserSerializer
@@ -61,7 +63,8 @@ class UserRegistrationView(generics.CreateAPIView):
         activation_link = f"http://investly.baliyoventures.com/api/activate/{user.id}/"
 
         subject = "Activate Your Angel Investment Account"
-        html_message = render_to_string("activation_email.html", {"user": user, "activation_link": activation_link})
+        html_message = render_to_string("activation_email.html", {
+                                        "user": user, "activation_link": activation_link})
         plain_message = strip_tags(html_message)
 
         send_mail(
@@ -72,16 +75,19 @@ class UserRegistrationView(generics.CreateAPIView):
             html_message=html_message,
         )
 
+
 def encode_user_id(user_id):
     """Encode user ID with timestamp to create activation token"""
     timestamp = str(int(time.time()))
     message = f"{user_id}:{timestamp}"
     # Create a hash using user_id, timestamp, and secret key
-    signature = hashlib.sha256(f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
+    signature = hashlib.sha256(
+        f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
     # Combine all parts
     token = f"{message}:{signature}"
     # Convert to base64 to make it URL-safe
     return base64.urlsafe_b64encode(token.encode()).decode()
+
 
 def decode_user_id(token, max_age=72*3600):  # 72 hours expiry
     try:
@@ -91,18 +97,20 @@ def decode_user_id(token, max_age=72*3600):  # 72 hours expiry
         user_id_str, timestamp_str, signature = decoded.rsplit(':', 2)
         # Verify signature
         message = f"{user_id_str}:{timestamp_str}"
-        expected_signature = hashlib.sha256(f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
+        expected_signature = hashlib.sha256(
+            f"{message}:{settings.SECRET_KEY}".encode()).hexdigest()[:8]
         if not hmac.compare_digest(signature, expected_signature):
             return None
-        
+
         # Check timestamp
         timestamp = int(timestamp_str)
         if time.time() - timestamp > max_age:
             return None
-        
+
         return int(user_id_str)
     except Exception:
         return None
+
 
 @api_view(['POST'])
 def activate_account(request):
@@ -146,6 +154,7 @@ class CompanyListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         serializer.save(user=user)
 
+
 class CompanyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CompanySerializer
 
@@ -153,21 +162,26 @@ class CompanyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Company.objects.filter(user=user)
 
+
 class CompanyTagListCreateView(generics.ListCreateAPIView):
     queryset = CompanyTag.objects.all()
     serializer_class = CompanyTagSerializer
+
 
 class CompanyTagRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CompanyTag.objects.all()
     serializer_class = CompanyTagSerializer
 
+
 class CompanyTeamListCreateView(generics.ListCreateAPIView):
     queryset = CompanyTeam.objects.all()
     serializer_class = CompanyTeamSerializer
 
+
 class CompanyTeamRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CompanyTeam.objects.all()
     serializer_class = CompanyTeamSerializer
+
 
 class ChangeEmailView(generics.UpdateAPIView):
     serializer_class = CustomUserSerializer
@@ -178,9 +192,11 @@ class ChangeEmailView(generics.UpdateAPIView):
         new_email = request.data.get('new_email')
 
         if CustomUser.objects.filter(email=new_email).exists():
-            raise ValidationError({'new_email': 'This email is already in use.'})
+            raise ValidationError(
+                {'new_email': 'This email is already in use.'})
 
-        self.send_verification_email(user, new_email)  # Pass user.id and new_email to the method
+        # Pass user.id and new_email to the method
+        self.send_verification_email(user, new_email)
 
         return Response({'message': 'A verification email has been sent to your new email address. Please click the link in the email to verify your new email.'}, status=status.HTTP_200_OK)
 
@@ -188,7 +204,8 @@ class ChangeEmailView(generics.UpdateAPIView):
         verification_link = f"https://investly.baliyoventures.com/api/verify/{user.id}/email/{new_email}/"
 
         subject = "Verify Your New Email"
-        html_message = render_to_string("verify_email.html", {"user": user, "verification_link": verification_link, "new_email": new_email})
+        html_message = render_to_string("verify_email.html", {
+                                        "user": user, "verification_link": verification_link, "new_email": new_email})
         plain_message = strip_tags(html_message)
 
         send_mail(
@@ -199,12 +216,14 @@ class ChangeEmailView(generics.UpdateAPIView):
             html_message=html_message,
         )
 
+
 def verify_email(request, user_id, new_email):
     user = get_object_or_404(Users, id=user_id)
     user.email = new_email
     user.username = new_email
     user.save()
     return redirect("https://investly-frontend-lyart.vercel.app/")
+
 
 class UsersListCreateView(generics.ListCreateAPIView):
     queryset = Users.objects.all()
@@ -213,12 +232,13 @@ class UsersListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         email = self.request.data.get('email')
         if Users.objects.filter(email=email).exists():
-            raise ValidationError({'message': 'This email is already registered.'})
+            raise ValidationError(
+                {'message': 'This email is already registered.'})
 
         user = serializer.save()
-        user.is_activated = False
+        user.is_activated = True
         user.save()
-        
+
         # Send activation email with encoded token
         self.send_activation_email(user, email)
 
@@ -226,10 +246,10 @@ class UsersListCreateView(generics.ListCreateAPIView):
         # Generate activation token from user ID
         activation_token = encode_user_id(user.id)
         activation_link = f"https://investly-delta.vercel.app/activate/{activation_token}/"
-        
+
         subject = "Activate Your Angel Investment Account"
         html_message = render_to_string("activation_email.html", {
-            "user": user, 
+            "user": user,
             "activation_link": activation_link
         })
         plain_message = strip_tags(html_message)
@@ -242,6 +262,7 @@ class UsersListCreateView(generics.ListCreateAPIView):
             html_message=html_message,
         )
 
+
 class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
@@ -250,7 +271,7 @@ class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         # Get the user ID from the URL
         pk = self.kwargs.get('pk')
         return get_object_or_404(Users, id=pk)
-    
+
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = self.get_serializer(user)
@@ -278,13 +299,13 @@ class UserLoginView(APIView):
         email = request.data.get('email')
         if not email:
             raise ValidationError({'email': 'Email is required.'})
-        
+
         user = Users.objects.filter(email=email).first()
         if not user:
             raise ValidationError({'email': 'User not found.'})
         if not user.is_activated:
             raise ValidationError({'email': 'User is not activated.'})
-        
+
         # Generate JWT tokens
         refresh = RefreshToken.for_user(user)
 
@@ -301,7 +322,7 @@ class UserLoginView(APIView):
         # user.save()
 
         # self.send_verification_code(user, verification_code)
-        
+
         # return Response({
         #     'message': 'Verification code sent to your email.',
         #     'email': email
@@ -316,9 +337,9 @@ class UserLoginView(APIView):
     def send_verification_code(self, user, code):
         subject = "Your Login Verification Code"
         html_message = render_to_string(
-            "verification_code_email.html", 
+            "verification_code_email.html",
             {
-                "user": user, 
+                "user": user,
                 "code": code
             }
         )
@@ -332,8 +353,10 @@ class UserLoginView(APIView):
             html_message=html_message,
         )
 
+
 class VerifyLoginCodeView(APIView):
     serializer_class = VerifyLoginCodeSerializer
+
     def post(self, request):
         email = request.data.get('email')
         submitted_code = request.data.get('code')
@@ -355,13 +378,10 @@ class VerifyLoginCodeView(APIView):
 
         # Create tokens and complete login
         refresh = RefreshToken.for_user(user)
-        
+
         return Response({
             'message': 'Login successful.',
             'user': UsersSerializer(user).data,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
-
-    
-     

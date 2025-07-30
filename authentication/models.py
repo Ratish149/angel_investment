@@ -46,6 +46,8 @@ class Users(models.Model):
     document = models.FileField(upload_to='documents/', null=True, blank=True)
     is_activated = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=100, null=True, blank=True)
+    investment_interest_area = models.CharField(
+        max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"{self.full_name} - {self.organization_name}"
