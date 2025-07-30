@@ -239,29 +239,6 @@ class UsersListCreateView(generics.ListCreateAPIView):
         user.is_activated = True
         user.save()
 
-        # Send activation email with encoded token
-        self.send_activation_email(user, email)
-
-    def send_activation_email(self, user, email):
-        # Generate activation token from user ID
-        activation_token = encode_user_id(user.id)
-        activation_link = f"https://investly-delta.vercel.app/activate/{activation_token}/"
-
-        subject = "Activate Your Angel Investment Account"
-        html_message = render_to_string("activation_email.html", {
-            "user": user,
-            "activation_link": activation_link
-        })
-        plain_message = strip_tags(html_message)
-
-        send_mail(
-            subject,
-            plain_message,
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            html_message=html_message,
-        )
-
 
 class UsersRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UsersSerializer
