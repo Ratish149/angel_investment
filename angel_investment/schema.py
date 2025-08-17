@@ -156,7 +156,8 @@ class CohortType(DjangoObjectType):
     class Meta:
         model = Cohort
         filter_fields = {
-            'participating_status': ['exact']
+            'participating_status': ['exact'],
+            'id': ['exact']
         }
 
 
