@@ -1,13 +1,13 @@
-from django.shortcuts import render
-from .serializers import ContactSerializer,NewsletterSerializer
+from .serializers import ContactSerializer, NewsletterSerializer, BookSpaceSerializer
 from rest_framework import generics
-from .models import Contact,Newsletter
-from django.core.mail import send_mail
+from .models import Contact, Newsletter, BookSpace
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.conf import settings
-
+import os
+import resend
 # Create your views here.
+
+resend.api_key = os.getenv('RESEND_API_KEY')
+
 
 class ContactView(generics.ListCreateAPIView):
     queryset = Contact.objects.all()
@@ -15,23 +15,30 @@ class ContactView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         contact = serializer.save()
-        
-        # Send email to admin
-        subject = "New Contact Form Submission"
-        html_message = render_to_string(
+        email = contact.email
+
+        html_content = render_to_string(
             "admin_contact_email.html",
             {"contact": contact}
         )
-        plain_message = strip_tags(html_message)
+        if resend.api_key:
+            try:
+                params = {
+                    "from": "BAIN@BAIN.com",
+                    "to": [email],
+                    "subject": "New Contact Form Submission",
+                    "html": html_content,
+                }
+                resend.Emails.send(params)
+            except Exception as e:
+                pass
 
-        send_mail(
-            subject,
-            plain_message,
-            settings.DEFAULT_FROM_EMAIL,
-            [settings.EMAIL_HOST_USER],  # Send to admin email
-            html_message=html_message,
-        )
 
 class NewsletterView(generics.ListCreateAPIView):
     queryset = Newsletter.objects.all()
     serializer_class = NewsletterSerializer
+
+
+class BookSpaceView(generics.ListCreateAPIView):
+    queryset = BookSpace.objects.all()
+    serializer_class = BookSpaceSerializer

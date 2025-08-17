@@ -223,12 +223,3 @@ UNFOLD = {
     "SITE_HEADER": "Biratnagar Angel Investment",
     "THEME": "dark",
 }
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'bdevil149@gmail.com'
-EMAIL_HOST_PASSWORD = 'agkr agoi ulip lwcp'
-
-DEFAULT_FROM_EMAIL = 'Investly <investly@gmail.com>'

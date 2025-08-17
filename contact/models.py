@@ -27,3 +27,16 @@ class Newsletter(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class BookSpace(models.Model):
+    name = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    message = models.TextField(null=True, blank=True)
+    date_and_time = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
