@@ -153,12 +153,18 @@ class CompanyTeamType(DjangoObjectType):
 
 
 class CohortType(DjangoObjectType):
+    company_Logo = graphene.String()
     class Meta:
         model = Cohort
         filter_fields = {
             'participating_status': ['exact'],
             'id': ['exact']
         }
+
+    def resolve_company_Logo(self, info):
+        if self.company_Logo:
+            return self.company_Logo.url
+        return None
 
 
 class CohortMemberType(DjangoObjectType):
