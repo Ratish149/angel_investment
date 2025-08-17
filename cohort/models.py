@@ -22,8 +22,8 @@ class Cohort(models.Model):
     company_name = models.CharField(max_length=100)
     company_Logo = models.FileField(
         upload_to='company_logo/', null=True, blank=True)
-    company_address = models.CharField(max_length=100)
-    company_email = models.EmailField()
+    company_address = models.CharField(max_length=100, null=True, blank=True)
+    company_email = models.EmailField(null=True, blank=True)
     company_phone = models.CharField(max_length=15, null=True, blank=True)
     company_description = models.TextField()
     participating_status = models.CharField(
