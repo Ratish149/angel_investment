@@ -1,6 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from .models import Academy, Article
+from .models import Academy, Article, Documents
 from graphene_django_pagination import DjangoPaginationConnectionField
 
 
@@ -8,6 +8,12 @@ class ArticleType(DjangoObjectType):
     class Meta:
         model = Article
         filter_fields = ['academy__slug','slug']
+
+
+class DocumentsType(DjangoObjectType):
+    class Meta:
+        model = Documents
+
 
 class AcademyType(DjangoObjectType):
     total_articles = graphene.Int()
@@ -27,10 +33,14 @@ class AcademyType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     articles = DjangoPaginationConnectionField(ArticleType)
+    documents = graphene.List(DocumentsType)
     academy = graphene.List(AcademyType)
 
     def resolve_articles(self, info, **kwargs):
         return Article.objects.all()
+
+    def resolve_documents(self, info, **kwargs):
+        return Documents.objects.all()
 
     def resolve_academy(self, info, **kwargs):
         return Academy.objects.all()

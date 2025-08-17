@@ -3,7 +3,8 @@ from graphene_django.types import DjangoObjectType
 from team.models import OurTeam, OurPartner
 from events.models import Event, EventAttendee
 from blog.models import Author, Category, Tag, Post, Faq
-from academy.models import Academy, Article
+from academy.models import Academy, Article, Documents
+from cohort.models import Cohort, CohortMember
 from authentication.models import CustomUser, Company, CompanyTag, CompanyTeam, Users
 from graphene_django_pagination import DjangoPaginationConnectionField
 
@@ -106,6 +107,18 @@ class AcademyType(DjangoObjectType):
         return None
 
 
+class DocumentsType(DjangoObjectType):
+    file = graphene.String()
+
+    class Meta:
+        model = Documents
+
+    def resolve_file(self, info):
+        if self.file:
+            return self.file.url
+        return None
+
+
 class CustomUserType(DjangoObjectType):
     class Meta:
         model = CustomUser
@@ -138,6 +151,19 @@ class CompanyTeamType(DjangoObjectType):
     class Meta:
         model = CompanyTeam
 
+
+class CohortType(DjangoObjectType):
+    class Meta:
+        model = Cohort
+        filter_fields = {
+            'participating_status': ['exact']
+        }
+
+
+class CohortMemberType(DjangoObjectType):
+    class Meta:
+        model = CohortMember
+
 # Define a query to list all team members
 
 
@@ -154,6 +180,9 @@ class Query(graphene.ObjectType):
 
     articles = DjangoPaginationConnectionField(ArticleType)
     academy = graphene.List(AcademyType)
+    documents = graphene.List(DocumentsType)
+    cohorts = DjangoPaginationConnectionField(CohortType)
+    cohort_members = graphene.List(CohortMemberType)
 
     custom_users = graphene.List(CustomUserType)
     companies = DjangoPaginationConnectionField(CompanyType)
@@ -172,11 +201,20 @@ class Query(graphene.ObjectType):
     def resolve_company_teams(self, info, **kwargs):
         return CompanyTeam.objects.all()
 
+    def resolve_cohorts(self, info, **kwargs):
+        return Cohort.objects.all()
+
+    def resolve_cohort_members(self, info, **kwargs):
+        return CohortMember.objects.all()
+
     def resolve_academy(self, info, **kwargs):
         return Academy.objects.all()
 
     def resolve_articles(self, info, **kwargs):
         return Article.objects.all()
+
+    def resolve_documents(self, info, **kwargs):
+        return Documents.objects.all()
 
     def resolve_all_authors(self, info, **kwargs):
         return Author.objects.all()

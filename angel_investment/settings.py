@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'events',
     'academy',
     'contact',
+    'cohort'
 ]
 
 GRAPHENE = {
@@ -63,7 +64,8 @@ GRAPHENE = {
         'blog.schema.schema',  # New schema from blog app
         'events.schema.schema',
         'academy.schema.schema',
-        'team.schema.schema'
+        'team.schema.schema',
+        'cohort.schema.schema'
 
     ]
 }
