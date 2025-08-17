@@ -37,3 +37,4 @@ class BookSpaceSerializer(serializers.ModelSerializer):
                     "html": html,
                 }
                 resend.Emails.send(params)
+        return book_space
