@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from pickle import FROZENSET
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,6 +31,7 @@ SECRET_KEY = 'django-insecure-l!bd3n8gp*c+jbonku1fpw@ry74-4m1^a#s4zqg@ky2=-hnls_
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+FRONTEND_URL = 'https://hammerhead-app-ny9v2.ondigitalocean.app'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
